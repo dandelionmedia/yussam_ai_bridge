@@ -1,6 +1,20 @@
 /* Static hosting compatibility. Original page components and content are retained. */
 (() => {
   'use strict';
+  // Discourage casual source viewing. Browser-delivered source remains accessible.
+  document.addEventListener('contextmenu', (event) => {
+    event.preventDefault();
+  }, { capture: true, passive: false });
+  document.addEventListener('keydown', (event) => {
+    const sourceShortcut = !event.shiftKey && (
+      (event.ctrlKey && !event.metaKey && !event.altKey) ||
+      (event.metaKey && event.altKey && !event.ctrlKey)
+    );
+    if (sourceShortcut && event.key.toLowerCase() === 'u') {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+    }
+  }, { capture: true, passive: false });
   const base = window.__BRIDGE_BASE__ || '';
   const local = (value) => {
     const url = new URL(value, location.href);
